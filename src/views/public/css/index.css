@@ -1,0 +1,74 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Archivo Narrow', sans-serif;
+  background-color: #1F2428;
+  margin: auto;
+  padding: 10px;
+}
+
+.center {
+  align-items: center;
+  text-align: center;
+  word-break: break-all;
+  padding: 0px;
+}
+
+.spacer {
+  margin-top: 5px;
+}
+
+.box {
+  color: white;
+  background-color: rgb(100, 100, 100);
+  box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+  padding: 5px;
+  width: 25em;
+  margin: auto;
+  margin-bottom: 25px;
+}
+
+.resBox {
+  color: white;
+  background-color: rgb(100, 100, 100);
+  box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+  border-radius: 25px;
+  padding: 5px;
+  width: 30em;
+  margin: auto;
+  margin-bottom: 25px;
+}
+
+.numberSize {
+  width: 3.5rem;
+  height: 28px;
+  padding-left: 8px;
+  padding-right: 1px;
+  float: center;
+  background: rgb(226, 226, 226);
+  border: 1.5px solid rgb(179, 177, 177);
+  border-radius: 8.5%;
+}
+
+.numberSize:focus {
+  outline: 0;
+}
+
+.cButton {
+  display: none;
+}
+
+.cButton-on {
+  text-decoration: none;
+  font-size: medium;
+  cursor: pointer;
+}
+
+p { margin-bottom: 0.5px; font-size: 18px; }
+h1 { color: white; font-size: 28px; text-transform: uppercase; letter-spacing: .2px; }
+#headerText { color: white; font-weight: 500; font-size: 25px; letter-spacing: .2px; margin-bottom: 10px; }
+#githubImage { width: 32px; }

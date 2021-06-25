@@ -1,3 +1,0 @@
-function quitApp() {
-    window.close();
-}

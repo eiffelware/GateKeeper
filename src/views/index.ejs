@@ -1,105 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GateKeeper</title>
-    <link rel="icon" href="/public/favicon.ico">
-    <link rel="stylesheet" href="./public/css/main.css">
-    <link rel="stylesheet" href="./public/css/form.css">
+    <title>GateKeeper v.0.2</title>
+    <link rel="icon" type="image/ico" href="/public/favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./public/css/index.css">
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-</head>
-<body>
-    <div class="container">
-        <ul class="nav-links">
-            <li><form action="./lookup.ejs"><button type="submit" class="navSubmit">IP Lookup</button></form></li>
-            <li><form action="https://webmail.pimz.xyz/"><button type="submit" class="navSubmit">PimMail</button></form></li>
-            <li><form><button id="quitBTN" type="submit" class="navSubmit" onclick="quitApp()">Quit</button></form></li>
-        </ul> <br> <br>
-        <div class="center">
-            <h3 style="color: white;">Generate Passwords Here</h3>
-            <br><div class="box">
-                <div class="resultPass" id="rslt">
-                    <p id="message"></p>
-                    <p id="md5"></p>
-                </div>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="center">
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+          <button class="navbar-toggler" id="quitBTN" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbar">
+            <div class="navbar-nav">
+              <a class="nav-link active" aria-current="page" href="./index.ejs">Home</a>
+              <a class="nav-link" aria-current="page" href="https://www.pimz.xyz/">PimMail</a>
+              <a class="nav-link" aria-current="page" href="./info.ejs">Info</a>
+              <a class="nav-link" aria-current="page" href="#" onclick="quitApp()">Quit</a>
             </div>
-            <div class="center"></div> <br> <br> <br>
-                <div class="class">
-                    <label for="keyG" style="color: black; text-transform: uppercase; font-weight: bold;">Password Length</label>
-                        <form>
-                            <input for="keySlider" class="numberSize" type="number" name="keyG" id="keyG" placeholder="6" min="6" max="12" value="9"> <br> 
-                            <input type="range" class="rangeSize" name="keySlider" id="keySlider" min="6" max="12" value="9"> <br> <br> 
-                        </form>
-                        <button type="submit" class="gButton" for="keyG" id="key">Generate Password</button>
-                        <div class="spacer"></div>
-                        <button type="button" class="cButton" id="copyBTN" onclick="copyLink()">Copy Password</button>
-                </div>
+          </div>
         </div>
-    </div>
-</body>
+      </nav>
+      <div class="spacer"></div>
+      <div class="box">
+        <h3 style="color: white;">Generate Passwords Here</h3>
+        <div class="resultPass" id="rslt">
+          <p id="message"></p>
+          <p id="md5"></p>
+          <div class="spacer"></div>
+        </div>
+      </div>
+      <div class="resBox">
+        <label for="customRange3" class="form-label" style="color: white; font-size: 20px;">Password Length</label> <br>
+        <input for="keySlider" class="numberSize" type="number" name="keyG" id="keyG" placeholder="6" min="6" max="12" value="9"> <br>
+        <input type="range" class="form-range" min="6" max="12" value="9" step="1" id="customRange3" style="width: 75%;">
+        <div class="spacer"></div>
+        <button type="submit" class="btn btn-success" style="margin-bottom: 5px;" id="key">Generate Password</button>
+        <button type="button" class="btn btn-success cButton" style="margin-bottom: 5px;" id="copyBTN" onclick="copyLink()">Copy Password</button>
+      </div>
+  </body>
 </html>
 <script defer>
-    const keySlider = document.getElementById('keySlider');
-    const keyG = document.getElementById('keyG');
-    var h = document.getElementById('md5');
-    var cc = document.getElementById('rslt')
-    var g = document.getElementById('message');
-    var copy = document.getElementById('copyBTN');
+  const keySlider = document.getElementById('customRange3');
+  const keyG = document.getElementById('keyG');
+  var h = document.getElementById('md5');
+  var cc = document.getElementById('rslt')
+  var g = document.getElementById('message');
+  var copy = document.getElementById('copyBTN');
+  var g = document.getElementById('message');
+  var h = document.getElementById('md5');
 
-    keySlider.addEventListener('input', syncPassLength)
-    keyG.addEventListener('input', syncPassLength)
+  keySlider.addEventListener('input', syncPassLength)
+  keyG.addEventListener('input', syncPassLength)
 
-    function syncPassLength(e) {
-        const value = e.target.value
-        keySlider.value = value
-        keyG.value = value
-    }
+  function syncPassLength(e) {
+      const value = e.target.value
+      keySlider.value = value
+      keyG.value = value
+  }
 
-    function copyLink() {
-        var text = $("#rslt").get(0)
-        var selection = window.getSelection();
-        var range = document.createRange();
-        range.selectNodeContents(text);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        document.execCommand('copy');
-        g.innerHTML = "Copied Password and Hash.";
-        h.innerHTML = "";
-        copy.classList.remove('cButton-on');
-        copy.classList.add('cButton');
-    }
+  function quitApp() {
+    window.close();
+  }
 
-    g.innerHTML = "Create A Password.";
-    h.innerHTML = "";
-    $('#key').on("click", function(e) {
-        var g = document.getElementById('message');
-        var h = document.getElementById('md5');
-        var i = document.getElementById('keyG').value;
-        var p = document.getElementById('key').value = i;
-        var copy = document.getElementById('copyBTN');
+  function copyLink() {
+      var text = $("#rslt").get(0)
+      var selection = window.getSelection();
+      var range = document.createRange();
+      range.selectNodeContents(text);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand('copy');
+      g.innerHTML = "Copied Password and Hash.";
+      h.innerHTML = "";
+      copy.classList.remove('cButton-on');
+      copy.classList.add('cButton');
+  }
 
-        g.innerHTML = "Create A Password."
-        if (isNaN(e.target.value)) {
-            g.innerHTML = "";
-            g.innerHTML = "You need to enter a number."
-        } else {
-            g.innerHTML = "Loading. . .";
-            h.innerHTML = "";
-            fetch(`https://www.eiffelware.net/api/generate?l=${e.target.value}`, { method: 'get' }).then((r) => r.json()).then((b) => {
-            if (b.OK == false) {
-            g.innerHTML = "";
-            g.innerHTML = b.error;
-        } else {
-            g.innerHTML = "";
-            g.innerText = `Password: ${b.id}`;
-            h.innerHTML = `md5 Hash: ${b.md5Hash}`;
-            copy.classList.remove('cButton');
-            copy.classList.add('cButton-on');
-            }
-        })
-    }
+  g.innerHTML = "Create A Password.";
+  h.innerHTML = "";
+  $('#key').on("click", function(e) {
+      var g = document.getElementById('message');
+      var h = document.getElementById('md5');
+      var i = document.getElementById('keyG').value;
+      var p = document.getElementById('key').value = i;
+      var copy = document.getElementById('copyBTN');
+
+      g.innerHTML = "Create A Password."
+      if (isNaN(e.target.value)) {
+          g.innerHTML = "";
+          g.innerHTML = `<div class="alert alert-danger" role="alert">You need to enter a number.</div>`;
+      } else {
+          g.innerHTML = "Loading. . .";
+          h.innerHTML = "";
+          fetch(`https://www.eiffelware.net/api/generate?l=${e.target.value}`, { method: 'get' }).then((r) => r.json()).then((b) => {
+          if (b.OK == false) {
+          g.innerHTML = "";
+          g.innerHTML = `<div class="alert alert-danger" role="alert">${b.error}</div>`;
+      } else {
+          g.innerHTML = "";
+          g.innerHTML = `<div class="alert alert-success" role="alert" style="padding: 5px; margin-bottom: 5px;">Password: ${b.id}</div>`;
+          h.innerHTML = `<div class="alert alert-success" role="alert" style="padding: 5px;">md5 Hash: ${b.md5Hash}</div>`;
+          copy.classList.remove('cButton');
+          copy.classList.add('cButton-on');
+          }
+      })
+  }
 })
 </script>
-<script defer src="./public/js/nav.js"></script>
-<script defer src="./public/js/quit.js"></script>

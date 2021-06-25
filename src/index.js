@@ -1,13 +1,20 @@
 const { app, BrowserWindow } = require('electron');
-const ejse = require('ejs-electron')
+const ejs = require('ejs-electron');
 const path = require('path');
-const open = require('open');
 
 if (require('electron-squirrel-startup')) { 
   app.quit();
 }
 
 const createWindow = () => {
+  const splashWindow = new BrowserWindow({
+    width: 350,
+    height: 450,
+    icon: __dirname + '/views/public/favicon.ico',
+    autoHideMenuBar: true,
+    frame: false,
+    resizable: false
+  })
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 800,
@@ -21,23 +28,16 @@ const createWindow = () => {
     show: false
   });
 
-  const splashWindow = new BrowserWindow({
-    width: 350,
-    height: 400,
-    resizable: false,
-    fullscreenable: false,
-    autoHideMenuBar: true,
-    frame: false,
-    icon: __dirname + '/views/public/favicon.ico'
-  })
-
   mainWindow.loadFile(path.join(__dirname, '/views/index.ejs'));
-  splashWindow.setMenu(null);
   splashWindow.loadFile(path.join(__dirname, '/views/splash.ejs'));
+  // mainWindow.webContents.openDevTools(); 
 
   splashWindow.once('close', () => {
     mainWindow.show();
   })
+
+  mainWindow.setMenu(null);
+  splashWindow.setMenu(null);
 };
 
 app.on('ready', createWindow);
