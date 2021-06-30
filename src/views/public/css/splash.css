@@ -2,6 +2,8 @@
     margin: 0;
     padding: 0;
   }
+
+  a { -webkit-user-select: none; -webkit-app-region: none; }
   
   body {
     font-family: 'Archivo Narrow', sans-serif;
@@ -32,7 +34,7 @@
     width: 15em;
     margin: auto;
     margin-top: 35%;
-    margin-bottom: 235px;
+    margin-bottom: 188px;
   }
   
   h1 { color: white; font-size: 28px; text-transform: uppercase; letter-spacing: .2px; }

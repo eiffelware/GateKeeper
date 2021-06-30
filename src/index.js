@@ -1,6 +1,8 @@
 const { app, BrowserWindow } = require('electron');
-const ejs = require('ejs-electron');
+const ejs = require('ejs');
+const ejsEl = require('ejs-electron');
 const path = require('path');
+const fetch = require('node-fetch');
 
 if (require('electron-squirrel-startup')) { 
   app.quit();
@@ -13,7 +15,11 @@ const createWindow = () => {
     icon: __dirname + '/views/public/favicon.ico',
     autoHideMenuBar: true,
     frame: false,
-    resizable: false
+    resizable: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
   })
   const mainWindow = new BrowserWindow({
     width: 900,
@@ -33,8 +39,13 @@ const createWindow = () => {
   // mainWindow.webContents.openDevTools(); 
 
   splashWindow.once('close', () => {
-    mainWindow.show();
-  })
+    fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.1`, {
+    method: 'get'
+  }).then((r) => r.json()).then((b) => {
+    if (!b.auth) return;
+    if (b.update) return;
+    if (b.auth) return mainWindow.show();
+  })})
 
   mainWindow.setMenu(null);
   splashWindow.setMenu(null);

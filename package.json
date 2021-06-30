@@ -1,7 +1,7 @@
 {
   "name": "gatekeeper",
   "productName": "GateKeeper",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Password Generator and a little bit more",
   "main": "src/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
     "build": "npm run pack:win64",
-    "pack:win64": "electron-packager . GateKeeper --out=dist/win --platform=win32 --arch=x64 app-version=0.2 --icon=./src/views/public/favicon.ico --overwrite"
+    "pack:win64": "electron-packager . GateKeeper --out=dist/win --platform=win32 --arch=x64 app-version=0.2.1 --icon=./src/views/public/favicon.ico --overwrite"
   },
   "keywords": [],
   "author": {
@@ -49,7 +49,8 @@
   "dependencies": {
     "ejs": "^3.1.6",
     "ejs-electron": "^2.1.1",
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-squirrel-startup": "^1.0.0",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
