@@ -1,7 +1,8 @@
 const fetch = require('node-fetch');
 var a = document.getElementById('headerText');
+setTimeout(() => { document.getElementById('btnQuit').classList.remove('disabled') }, 1950);
 
-fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.1`, {
+fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.2`, {
     method: 'get'
 }).then((r) => r.json()).then((b) => {
     console.log(b);

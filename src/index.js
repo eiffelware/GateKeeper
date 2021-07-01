@@ -3,6 +3,7 @@ const ejs = require('ejs');
 const ejsEl = require('ejs-electron');
 const path = require('path');
 const fetch = require('node-fetch');
+const jq = require('jquery');
 
 if (require('electron-squirrel-startup')) { 
   app.quit();
@@ -31,7 +32,11 @@ const createWindow = () => {
     minHeight: 665,
     autoHideMenuBar: true,
     icon: __dirname + '/views/public/favicon.ico',
-    show: false
+    show: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
   });
 
   mainWindow.loadFile(path.join(__dirname, '/views/index.ejs'));
@@ -39,7 +44,7 @@ const createWindow = () => {
   // mainWindow.webContents.openDevTools(); 
 
   splashWindow.once('close', () => {
-    fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.1`, {
+    fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.2`, {
     method: 'get'
   }).then((r) => r.json()).then((b) => {
     if (!b.auth) return;
