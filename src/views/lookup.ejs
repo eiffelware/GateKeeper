@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GateKeeper v0.2.2 : IP Lookup</title>
+    <title>GateKeeper v0.2.3 : IP Lookup</title>
     <link rel="icon" type="image/ico" href="/public/favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
@@ -24,7 +24,6 @@
               <div class="collapse navbar-collapse" id="navbar">
                 <div class="navbar-nav">
                     <a class="nav-link active" aria-current="page" href="./index.ejs">Home</a>
-                    <a class="nav-link" aria-current="page" href="https://www.pimz.xyz/">PimMail</a>
                     <a class="nav-link" aria-current="page" href="./lookup.ejs">IP Lookup</a>
                     <a class="nav-link" aria-current="page" href="./info.ejs">Info</a>
                     <a class="nav-link" aria-current="page" href="#" onclick="quitApp()">Quit</a>
@@ -44,20 +43,24 @@
           <div class="spacer"></div>
           <div class="resBox" id="resBox">
             <div class="spacer"></div>
-              <p id="ip"></p>
-              <p id="region"></p>
-              <p id="country"></p>
+              <p id="ip" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"></p>
+              <p id="region" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"></p>
               <p id="hostname"></p>
               <p id="org"></p>
               <p id="timezone"></p>
               <div class="spacer"></div>
-              <button type="button" class="btn btn-success" onclick="copyIP()" id="cBTN" style="margin-bottom: 5px;">Copy Password</button>
+              <button type="button" class="btn btn-success" onclick="copyIP()" id="cBTN" style="margin-bottom: 5px;">Copy Information</button>
           </div>
     </div>
 </body>
 </html>
 <script defer>
 const fetch = require('node-fetch');
+
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
+})
 
 function copyIP() {
   var res = document.getElementById('resBox'); 
@@ -69,7 +72,6 @@ function copyIP() {
   document.execCommand('copy');
   document.getElementById('ip').innerHTML = "Copied";
   document.getElementById('region').innerHTML = "";
-  document.getElementById('country').innerHTML = "";
   document.getElementById('hostname').innerHTML = "";
   document.getElementById('org').innerHTML = "";
   document.getElementById('timezone').innerHTML = "";
@@ -79,7 +81,6 @@ $('#submit').submit(function(e) {
     e.preventDefault();
     var ip = document.getElementById('ip');
     var region = document.getElementById('region');
-    var country = document.getElementById('country');
     var hostname = document.getElementById('hostname');
     var org = document.getElementById('org');
     var timezone = document.getElementById('timezone');
@@ -90,18 +91,17 @@ $('#submit').submit(function(e) {
       }).then((r) => r.json()).then((b) => {
         document.getElementById('resBox').classList.remove('resBox');
         document.getElementById('resBox').classList.add('resBox-show');
-        console.log(b);
+        var tooltip = new bootstrap.Tooltip(ip);
+        var tooltip2 = new bootstrap.Tooltip(region);
         ip.innerHTML = "";
         region.innerHTML = ""; 
-        country.innerHTML = "";
         hostname.innerHTML = "";
         org.innerHTML = "";
         timezone.innerHTML = "";
         document.getElementById('cBTN').classList.remove('disabled');
         if (b.error) { ip.innerHTML = `Error: ${b.error.message}`, document.getElementById('cBTN').classList.add('disabled'); };
-        if (b.data.ip) ip.innerHTML = `IP Address: ${b.data.ip}`;
-        if (b.data.region) region.innerHTML = `City: ${b.data.city}  |  Region: ${b.data.region}`;
-        if (b.data.country) country.innerHTML = `Country: ${b.data.country}`;
+        if (b.data.ip) ip.innerHTML = `IP Address: ${b.data.ip}`, tooltip._config.title = `Geo Loc: ${b.data.loc}      Please note that this may not be accurate.`;
+        if (b.data.region) region.innerHTML = `City: ${b.data.city}  |  Region: ${b.data.region}  |  Country: ${b.data.country}`, tooltip2._config.title = `Zip Code: ${b.data.postal}`;
         if (b.data.hostname !== undefined) hostname.innerHTML = `Hostname: ${b.data.hostname}`;
         if (b.data.org) org.innerHTML = `ISP: ${b.data.org}`;
         if (b.data.timezone) timezone.innerHTML = `Timezone: ${b.data.timezone}`;

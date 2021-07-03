@@ -39,18 +39,20 @@ const createWindow = () => {
     }
   });
 
-  mainWindow.loadFile(path.join(__dirname, '/views/index.ejs'));
   splashWindow.loadFile(path.join(__dirname, '/views/splash.ejs'));
+  mainWindow.loadFile(path.join(__dirname, '/views/index.ejs'));
   // mainWindow.webContents.openDevTools(); 
 
   splashWindow.once('close', () => {
-    fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.2`, {
+    fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.3`, {
     method: 'get'
   }).then((r) => r.json()).then((b) => {
-    if (!b.auth) return;
+    if (!b.auth) return app.quit();
     if (b.update) return;
-    if (b.auth) return mainWindow.show();
-  })})
+    if (b.auth) { return mainWindow.show() } 
+    else { app.quit(); };
+  });
+});
 
   mainWindow.setMenu(null);
   splashWindow.setMenu(null);

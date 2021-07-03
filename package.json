@@ -1,7 +1,7 @@
 {
   "name": "gatekeeper",
   "productName": "GateKeeper",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Password Generator and a little bit more",
   "main": "src/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
     "build": "npm run pack:win64",
-    "pack:win64": "electron-packager . GateKeeper --out=dist/win --platform=win32 --arch=x64 app-version=0.2.2 --icon=./src/views/public/favicon.ico --overwrite"
+    "pack:win64": "electron-packager . GateKeeper --out=dist/win --platform=win32 --arch=x64 app-version=0.2.3 --icon=./src/views/public/favicon.ico --overwrite"
   },
   "keywords": [],
   "author": {

@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 var a = document.getElementById('headerText');
 setTimeout(() => { document.getElementById('btnQuit').classList.remove('disabled') }, 1950);
 
-fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.2`, {
+fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.3`, {
     method: 'get'
 }).then((r) => r.json()).then((b) => {
     console.log(b);
@@ -10,7 +10,3 @@ fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.2`, {
     if (!b.update) return document.getElementById('btnQuit').classList.add('disabled'), setTimeout(() => { window.close() }, 1335);
     if (b.update) return window.open(b.url), a.innerHTML = b.updateText, setTimeout(() => { document.getElementById('btnQuit').classList.remove('disabled') }, 1599);
 });
-
-function quitApp() {
-    window.close();
-  }
