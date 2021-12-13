@@ -1,26 +1,50 @@
 <!DOCTYPE html>
 <html>
-  <%- include('./meta/index', { title: 'Home', css: 'main' }); %>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GateKeeper v0.2.3</title>
+    <link rel="icon" type="image/ico" href="/public/favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./public/css/index.css">
+    <script>window.$ = window.jQuery = require('jquery');</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow&display=swap" rel="stylesheet">
+  </head>
   <body>
-    <div class="m-auto max-w-max text-center">
-      <%- include('./meta/nav'); %>
-      <div class="my-1"></div>
+    <div class="center">
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+          <button class="navbar-toggler" id="quitBTN" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbar">
+            <div class="navbar-nav">
+              <a class="nav-link active" aria-current="page" href="./index.ejs">Home</a>
+              <a class="nav-link" aria-current="page" href="./lookup.ejs">IP Lookup</a>
+              <a class="nav-link" aria-current="page" href="./info.ejs">Info</a>
+              <a class="nav-link" aria-current="page" href="#" onclick="quitApp()">Quit</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="spacer"></div>
       <div class="box">
-        <h3 class="my-1" style="font-size: 32px;">Generate Passwords Here</h3>
+        <h3 style="color: white;">Generate Passwords Here</h3>
         <div class="resultPass" id="rslt">
           <p id="message"></p>
-          <p id="salt"></p>
           <p id="md5"></p>
-          <div class="my-1"></div>
+          <div class="spacer"></div>
         </div>
-        <button type="submit" class="btn btn-success" style="margin-bottom: 5px;" id="key">Generate</button>
       </div>
-      <div class="my-5"></div>
       <div class="resBox">
-        <label for="customRange3" class="form-label" style="font-size: 22.5px;">Password Length</label> <br>
+        <label for="customRange3" class="form-label" style="color: white; font-size: 20px;">Password Length</label> <br>
         <input for="keySlider" class="numberSize" type="number" name="keyG" id="keyG" placeholder="6" min="6" max="12" value="9"> <br>
         <input type="range" class="form-range" min="6" max="12" value="9" step="1" id="customRange3" style="width: 75%;">
         <div class="spacer"></div>
+        <button type="submit" class="btn btn-success" style="margin-bottom: 5px;" id="key">Generate Password</button>
         <button type="button" class="btn btn-success cButton" style="margin-bottom: 5px;" id="copyBTN" onclick="copyLink()">Copy Password</button>
       </div>
   </body>
@@ -32,7 +56,7 @@
   var cc = document.getElementById('rslt')
   var g = document.getElementById('message');
   var copy = document.getElementById('copyBTN');
-  var s = document.getElementById('salt');
+  var g = document.getElementById('message');
   var h = document.getElementById('md5');
 
   keySlider.addEventListener('input', syncPassLength)
@@ -49,33 +73,29 @@
   }
 
   function copyLink() {
-      var text = $("#message").get(0)
-      var passText = text.innerText.split(': ')[1];
+      var text = $("#rslt").get(0)
       var selection = window.getSelection();
       var range = document.createRange();
-      navigator.clipboard.writeText(passText).then(function() {
-        document.getElementById('key').innerHTML = `Generate`;
-        g.innerHTML = "Copied Password";
-        s.innerHTML = "";
-        h.innerHTML = "";
-        copy.classList.remove('cButton-on');
-        copy.classList.add('cButton');
-      }, function(err) {
-        console.error('Async: Could not copy text: ', err);
-      });
+      range.selectNodeContents(text);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand('copy');
+      g.innerHTML = "Copied Password and Hash.";
+      h.innerHTML = "";
+      copy.classList.remove('cButton-on');
+      copy.classList.add('cButton');
   }
 
-  g.innerHTML = "";
+  g.innerHTML = "Create A Password.";
   h.innerHTML = "";
   $('#key').on("click", function(e) {
       var g = document.getElementById('message');
       var h = document.getElementById('md5');
       var i = document.getElementById('keyG').value;
       var p = document.getElementById('key').value = i;
-      var s = document.getElementById('salt');
       var copy = document.getElementById('copyBTN');
 
-      g.innerHTML = ""
+      g.innerHTML = "Create A Password."
       if (isNaN(e.target.value)) {
           g.innerHTML = "";
           g.innerHTML = `<p>You need to enter a number.</p>`;
@@ -89,9 +109,7 @@
       } else {
           g.innerHTML = "";
           g.innerHTML = `<p style="padding: 5px; margin-bottom: 5px;">Password: ${b.id}</p>`;
-          s.innerHTML = `<p style="padding: 5px; margin-bottom: 5px;">Salt: ${b.salt}</p>`;
           h.innerHTML = `<p style="padding: 5px;">md5 Hash: ${b.md5Hash}</p>`;
-          document.getElementById('key').innerHTML = `Generate Again`;
           copy.classList.remove('cButton');
           copy.classList.add('cButton-on');
           }
