@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, shell, BrowserWindow, session } = require('electron');
 const ejs = require('ejs');
 const ejsEl = require('ejs-electron');
 const path = require('path');
@@ -41,17 +41,21 @@ const createWindow = () => {
 
   splashWindow.loadFile(path.join(__dirname, '/views/splash.ejs'));
   mainWindow.loadFile(path.join(__dirname, '/views/index.ejs'));
+  mainWindow.webContents.on("new-window", function(event, url) {
+    event.preventDefault();
+    shell.openExternal(url);
+  });
   // mainWindow.webContents.openDevTools(); 
 
   splashWindow.once('close', () => {
-    fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.3`, {
+    fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.4`, {
     method: 'get'
   }).then((r) => r.json()).then((b) => {
     if (!b.auth) return app.quit();
-    if (b.update) return;
+    if (b.update) return app.quit();
     if (b.auth) { return mainWindow.show() } 
     else { app.quit(); };
-  });
+  }).catch(err => app.quit());
 });
 
   mainWindow.setMenu(null);

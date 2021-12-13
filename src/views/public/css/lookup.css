@@ -5,7 +5,7 @@
 
 body {
   font-family: 'Archivo Narrow', sans-serif;
-  background-color: #1F2428;
+  background-color: #131313;
   margin: auto;
   padding: 10px;
 }
@@ -23,11 +23,11 @@ body {
 
 .box {
   color: white;
-  background-color: rgb(100, 100, 100);
+  background-color: rgb(36, 36, 36);
   box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
   border-radius: 5px;
   padding: 5px;
-  width: 30em;
+  width: max-content;
   margin: auto;
   margin-bottom: 25px;
 }
@@ -36,11 +36,11 @@ body {
 
 .resBox-show {
   color: white;
-  background-color: rgb(100, 100, 100);
+  background-color: rgb(36, 36, 36);
   box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
   border-radius: 5px;
   padding: 5px;
-  width: 28.5em;
+  width: max-content;
   margin: auto;
   margin-bottom: 6px;
 }
