@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <%- include('./meta/index', { title: 'Login', css: 'main' }); %>
+  <body>
+    <div class="m-auto max-w-max text-center">
+      <div class="box">
+        <h3 class="my-1" style="font-size: 32px;">GateKeeper Account</h3>
+        <div id="error" class="" role="alert" style="max-width: max-content; margin: auto;"></div>
+        <form method="post" id="form-login" class="max-w-max m-auto p-1 rounded-xl break-all">
+            <div class="mb-3">
+                <label for="user1" class="form-label">Username</label>
+                <input type="text" class="form-control" placeholder="Username" id="user1" aria-describedby="user1" name="username">
+                <div class="my-1"></div>
+                <label for="pass1" class="form-label">Password</label>
+                <input type="password" class="form-control" placeholder="Password" id="pass1" name="pass">
+            </div>
+            <button type="submit" class="btn btn-success">Login</button>
+        </form>
+      </div>
+      <div class="my-2"></div>
+      <button type="button" style="color: white; text-decoration: underline;" id="fgP">Create Account</button>
+  </body>
+</html>
+<script defer>
+  let cookie = localStorage.getItem("session");
+  const shell = require('electron').shell;
+  function quitApp() {
+    window.close();
+  }
+
+  fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth`, { method: 'post', headers: { session: cookie } }).then((r) => r.json()).then((b) => {
+      if (b.OK == true || !b.error) window.close();
+  });
+
+  $('#fgP').on('click', async function (ev) {
+    ev.preventDefault();
+    shell.openExternal("https://eiffelware.net/register");
+  });
+
+  $('#fgP2').on('click', async function (ev) {
+    ev.preventDefault();
+    shell.openExternal("https://eiffelware.net/password-reset");
+  });
+
+  $('#form-login').submit(function (e) {
+    e.preventDefault();
+    const formData = new URLSearchParams(new FormData(this));
+    fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/login`, { method: 'post', body: formData }).then((r) => r.json()).then((b) => {
+      if (b.error) {
+        $('#error').text(b.error);
+        $('#error').addClass('alert alert-danger my-1');
+        document.getElementById("fgP").setAttribute('id', 'fgP2');
+        document.getElementById("fgP2").innerHTML = "Forgot Password";
+      } else {
+        localStorage.setItem("session", b.token);
+        window.close();
+      }
+    });
+  });
+</script>

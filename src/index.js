@@ -22,6 +22,23 @@ const createWindow = () => {
       contextIsolation: false
     }
   })
+  const loginWindow = new BrowserWindow({
+    width: 350,
+    height: 450,
+    resizable: true,
+    maximizable: true, 
+    fullscreenable: false,
+    minWidth: 300, 
+    minHeight: 400,
+    autoHideMenuBar: true,
+    icon: __dirname + '/views/public/favicon.ico',
+    show: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      nativeWindowOpen: false
+    }
+  })
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 800,
@@ -41,25 +58,39 @@ const createWindow = () => {
 
   splashWindow.loadFile(path.join(__dirname, '/views/splash.ejs'));
   mainWindow.loadFile(path.join(__dirname, '/views/index.ejs'));
+  loginWindow.loadFile(path.join(__dirname, '/views/login.ejs'));
   mainWindow.webContents.on("new-window", function(event, url) {
     event.preventDefault();
     shell.openExternal(url);
   });
   // mainWindow.webContents.openDevTools(); 
 
+  let u;
+  mainWindow.webContents.executeJavaScript('localStorage.getItem("session")').then(object => u = object);
   splashWindow.once('close', () => {
-    fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.4`, {
+    fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.5`, {
     method: 'get'
   }).then((r) => r.json()).then((b) => {
+    fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth`, { method: 'post', headers: { session: u } }).then((r) => r.json()).then((uF) => {
     if (!b.auth) return app.quit();
     if (b.update) return app.quit();
-    if (b.auth) { return mainWindow.show() } 
-    else { app.quit(); };
+    if (b.auth && uF.OK == true) return mainWindow.show()
+    if (b.auth && uF.OK == false) return loginWindow.show()
+    app.quit();
+  });
   }).catch(err => app.quit());
-});
 
-  mainWindow.setMenu(null);
-  splashWindow.setMenu(null);
+  loginWindow.once('close', () => {
+    fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth`, { method: 'post', headers: { session: u } }).then((r) => r.json()).then((res) => {
+    console.log(res);
+    if (res.OK == true) return mainWindow.show()
+    app.quit();
+  }).catch(err => app.quit())});
+  
+    mainWindow.setMenu(null);
+    loginWindow.setMenu(null);
+    splashWindow.setMenu(null);
+  });
 };
 
 app.on('ready', createWindow);

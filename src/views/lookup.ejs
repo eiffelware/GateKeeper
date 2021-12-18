@@ -29,6 +29,17 @@
 </html>
 <script defer>
 const fetch = require('node-fetch');
+let cookie = localStorage.getItem("session");
+
+fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth`, { method: 'post', headers: { session: cookie } }).then((r) => r.json()).then((b) => {
+  if (b.OK == false || b.error) return window.close();
+  let acc = b;
+  var accn = document.getElementById('accNav');
+  var logn = document.getElementById('logoutNav');
+  accn.setAttribute('onclick', `window.open("https://www.eiffelware.net/dashboard?auth=${cookie}")`);
+  logn.setAttribute('onclick', `localStorage.removeItem("session"), window.close()`);
+  console.log(b);
+});
 
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
