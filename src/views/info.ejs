@@ -13,24 +13,33 @@
           <div class="spa"></div>
           <h5 style="color: white;">I added a Quit Button to the Loading Screen (For when an Update is available);</h5> <br>
           <h5 style="color: white;">v0.2.2 - Re-Implemented IP Lookup tool; Fixed launcher quit button; Changed minor details about the app;</h5> <br>
-          <h5 style="color: white;">v0.2.3 - Added Tooltips to IP Looukup tool!; Fixed Grammatical errors;</h5>
+          <h5 style="color: white;">v0.2.3 - Added Tooltips to IP Lookup tool!; Fixed Grammatical errors;</h5>
           <div class="spa"></div>
           <h5 style="color: white;">Removed PimMail due to performance issues;</h5>
           <div class="my-3"></div>
           <h5 style="color: white;">v0.2.4 - Updated UI; Updated Password Generating; More coming soon.</h5>
           <div class="my-3"></div>
           <h5 style="color: white;">v0.2.5 - Added GateKeeper accounts;</h5>
+          <div class="my-3"></div>
+          <h5 style="color: white;">v0.2.6 - Moved changelog to <button id="newCL" style="text-decoration: underline; color: rgb(73, 73, 225);">here</button>;</h5>
       </div>
     </div>
   </body>
 </html>
 <script defer>
   let cookie = localStorage.getItem("session");
+  const shell = require('electron').shell;
+  shell.openExternal("https://www.eiffelware.net/gatekeeper/changelog");
   function quitApp() {
     window.close();
   }
 
-  fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth`, { method: 'post', headers: { session: cookie } }).then((r) => r.json()).then((b) => {
+  $('#newCL').on('click', async function (ev) {
+    ev.preventDefault();
+    shell.openExternal("https://www.eiffelware.net/gatekeeper/changelog");
+  });
+
+  fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth/0.2.6`, { method: 'post', headers: { session: cookie } }).then((r) => r.json()).then((b) => {
     if (b.OK == false || b.error) return window.close();
     let acc = b;
     var accn = document.getElementById('accNav');

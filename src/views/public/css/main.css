@@ -22,7 +22,7 @@ body {
   background-color: rgb(36, 36, 36);
   box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
   border-radius: 6.5px;
-  padding: 5px;
+  padding: .6rem;
   width: max-content;
   margin: auto;
 }
@@ -32,7 +32,7 @@ body {
   background-color: rgb(36, 36, 36);
   box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
   border-radius: 25px;
-  padding: 8.5px;
+  padding: 1rem;
   width: max-content;
   margin: auto;
 }

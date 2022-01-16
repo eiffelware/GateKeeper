@@ -6,23 +6,33 @@
       <%- include('./meta/nav'); %>
       <div class="my-1"></div>
       <div class="box">
-        <h3 class="my-1" style="font-size: 32px;">Generate Passwords Here</h3>
+        <h3 class="my-1" style="font-size: 32px;">GateKeeper Password Generator</h3>
         <div class="resultPass" id="rslt">
           <p id="message"></p>
           <p id="salt"></p>
           <p id="md5"></p>
           <div class="my-1"></div>
         </div>
-        <button type="submit" class="btn btn-success" style="margin-bottom: 5px;" id="key">Generate</button>
       </div>
       <div class="my-5"></div>
-      <div class="resBox">
+      <form class="resBox" id="chk">
         <label for="customRange3" class="form-label" style="font-size: 22.5px;">Password Length</label> <br>
-        <input for="keySlider" class="numberSize" type="number" name="keyG" id="keyG" placeholder="6" min="6" max="12" value="9"> <br>
-        <input type="range" class="form-range" min="6" max="12" value="9" step="1" id="customRange3" style="width: 75%;">
+        <input for="keySlider" class="numberSize" type="number" name="keyG" id="keyG" placeholder="10" min="1" max="50" value="10" onchange="slider()"> <br>
+        <input type="range" class="form-range" min="1" max="50" value="10" step="1" id="customRange3" style="width: 75%;">
         <div class="spacer"></div>
-        <button type="button" class="btn btn-success cButton" style="margin-bottom: 5px;" id="copyBTN" onclick="copyLink()">Copy Password</button>
-      </div>
+        <div class="form-check" style="width: max-content; margin: auto;">
+          <input class="form-check-input" type="checkbox" id="anonCHK" name="anon">
+          <label class="form-check-label" for="anonCHK">Do Not Save</label>
+          <div class="spacer"></div>
+          <input class="form-check-input" type="checkbox" id="uppercaseCHK" name="uppercase">
+          <label class="form-check-label" for="uppercaseCHK">UPPERCASE</label>
+          <div class="spacer"></div>
+          <input class="form-check-input" type="checkbox" id="lowercaseCHK" name="lowercase">
+          <label class="form-check-label" for="lowercaseCHK">lowercase</label>
+        </div>
+        <div class="spacer"></div>
+        <button type="button" class="btn btn-success cButton" style="margin-bottom: 5px;" id="copyBTN">Copy Password</button>
+      </form>
   </body>
 </html>
 <script defer>
@@ -36,7 +46,7 @@
   var h = document.getElementById('md5');
   let cookie = localStorage.getItem("session");
 
-  fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth`, { method: 'post', headers: { session: cookie } }).then((r) => r.json()).then((b) => {
+  fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth/0.2.6`, { method: 'post', headers: { session: cookie } }).then((r) => r.json()).then((b) => {
       if (b.OK == false || b.error) return window.close();
       let acc = b;
       var accn = document.getElementById('accNav');
@@ -55,6 +65,26 @@
       keyG.value = value
   }
 
+  var value = keySlider.value;
+  if (value > 0 && value < 51) {
+    $('#chk').change(async function (ev) {
+      ev.preventDefault();
+      const formData = new URLSearchParams(new FormData(this));
+      await fetch(`https://www.eiffelware.net/api/v1/generate?l=${value}`, { method: 'post', body: formData, headers: { appsession: cookie } }).then((r) => r.json()).then((b) => {
+        if (!b.OK) {
+          g.innerHTML = "";
+          g.innerHTML = `<p>${b.error}</p>`;
+        } else {
+          g.innerHTML = `<p style="padding: 5px; margin-bottom: 5px;">Password: ${b.id}</p>`;
+          s.innerHTML = `<p style="padding: 5px; margin-bottom: 5px;">Salt: ${b.salt}</p>`;
+          h.innerHTML = `<p style="padding: 5px;">md5 Hash: ${b.md5Hash}</p>`;
+          copy.classList.remove('cButton');
+          copy.classList.add('cButton-on');
+        };
+      });
+    });
+  };
+
   function quitApp() {
     window.close();
   }
@@ -65,7 +95,6 @@
       var selection = window.getSelection();
       var range = document.createRange();
       navigator.clipboard.writeText(passText).then(function() {
-        document.getElementById('key').innerHTML = `Generate`;
         g.innerHTML = "Copied Password";
         s.innerHTML = "";
         h.innerHTML = "";
@@ -74,40 +103,5 @@
       }, function(err) {
         console.error('Async: Could not copy text: ', err);
       });
-  }
-
-  g.innerHTML = "";
-  h.innerHTML = "";
-  $('#key').on("click", function(e) {
-      var g = document.getElementById('message');
-      var h = document.getElementById('md5');
-      var i = document.getElementById('keyG').value;
-      var p = document.getElementById('key').value = i;
-      var s = document.getElementById('salt');
-      var copy = document.getElementById('copyBTN');
-
-      g.innerHTML = ""
-      if (isNaN(e.target.value)) {
-          g.innerHTML = "";
-          g.innerHTML = `<p>You need to enter a number.</p>`;
-      } else {
-          g.innerHTML = "Loading. . .";
-          h.innerHTML = "";
-          s.innerHTML = "";
-          fetch(`https://www.eiffelware.net/api/generate?l=${e.target.value}`, { method: 'get', headers: { appsession: cookie } }).then((r) => r.json()).then((b) => {
-          if (b.OK == false) {
-          g.innerHTML = "";
-          g.innerHTML = `<p>${b.error}</p>`;
-      } else {
-          g.innerHTML = "";
-          g.innerHTML = `<p style="padding: 5px; margin-bottom: 5px;">Password: ${b.id}</p>`;
-          s.innerHTML = `<p style="padding: 5px; margin-bottom: 5px;">Salt: ${b.salt}</p>`;
-          h.innerHTML = `<p style="padding: 5px;">md5 Hash: ${b.md5Hash}</p>`;
-          document.getElementById('key').innerHTML = `Generate Again`;
-          copy.classList.remove('cButton');
-          copy.classList.add('cButton-on');
-          }
-      })
-  }
-})
+  };
 </script>

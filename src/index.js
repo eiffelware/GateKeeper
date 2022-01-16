@@ -68,10 +68,10 @@ const createWindow = () => {
   let u;
   mainWindow.webContents.executeJavaScript('localStorage.getItem("session")').then(object => u = object);
   splashWindow.once('close', () => {
-    fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.5`, {
+    fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.6`, {
     method: 'get'
   }).then((r) => r.json()).then((b) => {
-    fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth`, { method: 'post', headers: { session: u } }).then((r) => r.json()).then((uF) => {
+    fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth/0.2.6`, { method: 'post', headers: { session: u } }).then((r) => r.json()).then((uF) => {
     if (!b.auth) return app.quit();
     if (b.update) return app.quit();
     if (b.auth && uF.OK == true) return mainWindow.show()
@@ -81,7 +81,7 @@ const createWindow = () => {
   }).catch(err => app.quit());
 
   loginWindow.once('close', () => {
-    fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth`, { method: 'post', headers: { session: u } }).then((r) => r.json()).then((res) => {
+    fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth/0.2.6`, { method: 'post', headers: { session: u } }).then((r) => r.json()).then((res) => {
     console.log(res);
     if (res.OK == true) return mainWindow.show()
     app.quit();

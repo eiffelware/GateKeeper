@@ -30,12 +30,14 @@
 <script defer>
 const fetch = require('node-fetch');
 let cookie = localStorage.getItem("session");
+let key;
 
-fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth`, { method: 'post', headers: { session: cookie } }).then((r) => r.json()).then((b) => {
+fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth/0.2.6`, { method: 'post', headers: { session: cookie } }).then((r) => r.json()).then((b) => {
   if (b.OK == false || b.error) return window.close();
   let acc = b;
   var accn = document.getElementById('accNav');
   var logn = document.getElementById('logoutNav');
+  key = b.user.apiKey;
   accn.setAttribute('onclick', `window.open("https://www.eiffelware.net/dashboard?auth=${cookie}")`);
   logn.setAttribute('onclick', `localStorage.removeItem("session"), window.close()`);
   console.log(b);
@@ -73,9 +75,10 @@ $('#submit').submit(function(e) {
     var timezone = document.getElementById('timezone');
     var t = document.getElementById('text');    
     if (t.value) {
-      fetch(`https://www.eiffelware.net/api/lookup/${t.value}`, {
+      fetch(`https://www.eiffelware.net/api/lookup/${t.value}?key=${key}`, {
         method: 'get'
       }).then((r) => r.json()).then((b) => {
+        console.log(key);
         document.getElementById('resBox').classList.remove('resBox');
         document.getElementById('resBox').classList.add('resBox-show');
         var tooltip = new bootstrap.Tooltip(ip);
