@@ -21,7 +21,7 @@
           <div class="my-3"></div>
           <h5 style="color: white;">v0.2.5 - Added GateKeeper accounts;</h5>
           <div class="my-3"></div>
-          <h5 style="color: white;">v0.2.6 - Moved changelog to <button id="newCL" style="text-decoration: underline; color: rgb(73, 73, 225);">here</button>;</h5>
+          <h5 style="color: white;">v0.2.7 - Moved changelog to <button id="newCL" style="text-decoration: underline; color: rgb(73, 73, 225);">here</button>;</h5>
       </div>
     </div>
   </body>
@@ -39,7 +39,7 @@
     shell.openExternal("https://www.eiffelware.net/gatekeeper/changelog");
   });
 
-  fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth/0.2.6`, { method: 'post', headers: { session: cookie } }).then((r) => r.json()).then((b) => {
+  fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth/0.2.7`, { method: 'post', headers: { session: cookie } }).then((r) => r.json()).then((b) => {
     if (b.OK == false || b.error) return window.close();
     let acc = b;
     var accn = document.getElementById('accNav');

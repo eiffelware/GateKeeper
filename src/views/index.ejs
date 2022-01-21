@@ -17,8 +17,10 @@
       <div class="my-5"></div>
       <form class="resBox" id="chk">
         <label for="customRange3" class="form-label" style="font-size: 22.5px;">Password Length</label> <br>
-        <input for="keySlider" class="numberSize" type="number" name="keyG" id="keyG" placeholder="10" min="1" max="50" value="10" onchange="slider()"> <br>
-        <input type="range" class="form-range" min="1" max="50" value="10" step="1" id="customRange3" style="width: 75%;">
+        <div>
+          <input for="keySlider" class="numberSize" type="number" name="keyG" id="keyG" placeholder="10" min="1" max="50" value="10" oninput="customRange3.value=keyG.value"> <br>
+          <input type="range" class="form-range" min="1" max="50" step="1" id="customRange3" style="width: 75%;" value="10" oninput="keyG.value=customRange3.value">
+        </div>
         <div class="spacer"></div>
         <div class="form-check" style="width: max-content; margin: auto;">
           <input class="form-check-input" type="checkbox" id="anonCHK" name="anon">
@@ -31,46 +33,46 @@
           <label class="form-check-label" for="lowercaseCHK">lowercase</label>
         </div>
         <div class="spacer"></div>
-        <button type="button" class="btn btn-success cButton" style="margin-bottom: 5px;" id="copyBTN">Copy Password</button>
+        <button type="button" class="btn btn-success cButton" style="margin-bottom: 5px;" id="copyBTN" onclick="copyLink()">Copy Password</button>
       </form>
+      <br><br>
+      <div>
+        <p id="newUpdate" style="display: none;"></p>
+      </div>
   </body>
 </html>
 <script defer>
-  const keySlider = document.getElementById('customRange3');
-  const keyG = document.getElementById('keyG');
+  var keySlider = document.getElementById('customRange3');
+  var keyG = document.getElementById('keyG');
   var h = document.getElementById('md5');
   var cc = document.getElementById('rslt')
   var g = document.getElementById('message');
   var copy = document.getElementById('copyBTN');
   var s = document.getElementById('salt');
   var h = document.getElementById('md5');
+  var newUpdate = document.getElementById('newUpdate');
   let cookie = localStorage.getItem("session");
+  let su = localStorage.getItem("skip_update");
 
-  fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth/0.2.6`, { method: 'post', headers: { session: cookie } }).then((r) => r.json()).then((b) => {
+  fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth/0.2.7`, { method: 'post', headers: { session: cookie } }).then((r) => r.json()).then((b) => {
       if (b.OK == false || b.error) return window.close();
       let acc = b;
       var accn = document.getElementById('accNav');
       var logn = document.getElementById('logoutNav');
       accn.setAttribute('onclick', `window.open("https://www.eiffelware.net/dashboard?auth=${cookie}")`);
       logn.setAttribute('onclick', `localStorage.removeItem("session"), window.close()`);
+      if (su) {
+        newUpdate.innerHTML = `${b.user.username}, there's a new update that you can install <a href="#" onclick="window.open('https://www.eiffelware.net/gatekeeper')" style="text-decoration: underline;">here</a>`;
+        newUpdate.setAttribute('style', 'color: rgb(197, 38, 38); display: block; font-size: 1.5em;');
+      };
       console.log(b);
   });
 
-  keySlider.addEventListener('input', syncPassLength)
-  keyG.addEventListener('input', syncPassLength)
-
-  function syncPassLength(e) {
-      const value = e.target.value
-      keySlider.value = value
-      keyG.value = value
-  }
-
-  var value = keySlider.value;
-  if (value > 0 && value < 51) {
+  if (keyG.value > 0 && keyG.value < 51) {
     $('#chk').change(async function (ev) {
       ev.preventDefault();
       const formData = new URLSearchParams(new FormData(this));
-      await fetch(`https://www.eiffelware.net/api/v1/generate?l=${value}`, { method: 'post', body: formData, headers: { appsession: cookie } }).then((r) => r.json()).then((b) => {
+      await fetch(`https://www.eiffelware.net/api/v1/generate?l=${keyG.value}`, { method: 'post', body: formData, headers: { appsession: cookie } }).then((r) => r.json()).then((b) => {
         if (!b.OK) {
           g.innerHTML = "";
           g.innerHTML = `<p>${b.error}</p>`;

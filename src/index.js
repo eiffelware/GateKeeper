@@ -3,6 +3,7 @@ const ejs = require('ejs');
 const ejsEl = require('ejs-electron');
 const path = require('path');
 const fetch = require('node-fetch');
+const RPC = require('discord-rpc');
 const jq = require('jquery');
 
 if (require('electron-squirrel-startup')) { 
@@ -67,22 +68,24 @@ const createWindow = () => {
 
   let u;
   mainWindow.webContents.executeJavaScript('localStorage.getItem("session")').then(object => u = object);
+  splashWindow.webContents.executeJavaScript('localStorage.getItem("skip_update")').then(object2 => su = object2);
   splashWindow.once('close', () => {
-    fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.6`, {
+    fetch(`https://www.eiffelware.net/api/apps/gatekeeper/0.2.7`, {
     method: 'get'
   }).then((r) => r.json()).then((b) => {
-    fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth/0.2.6`, { method: 'post', headers: { session: u } }).then((r) => r.json()).then((uF) => {
+    fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth/0.2.7`, { method: 'post', headers: { session: u } }).then((r) => r.json()).then((uF) => {
     if (!b.auth) return app.quit();
-    if (b.update) return app.quit();
-    if (b.auth && uF.OK == true) return mainWindow.show()
-    if (b.auth && uF.OK == false) return loginWindow.show()
+    if (b.update && !b.loginAuth) return app.quit();
+    if (su && b.loginAuth && !uF.OK) return loginWindow.show();
+    if (su && b.loginAuth && uF.OK) return mainWindow.show();
+    if (!b.update && b.auth && uF.OK) return mainWindow.show();
+    if (!b.update && b.auth && !uF.OK) return loginWindow.show();
     app.quit();
   });
   }).catch(err => app.quit());
 
   loginWindow.once('close', () => {
-    fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth/0.2.6`, { method: 'post', headers: { session: u } }).then((r) => r.json()).then((res) => {
-    console.log(res);
+    fetch(`https://www.eiffelware.net/api/v1/apps/gatekeeper/auth/0.2.7`, { method: 'post', headers: { session: u } }).then((r) => r.json()).then((res) => {
     if (res.OK == true) return mainWindow.show()
     app.quit();
   }).catch(err => app.quit())});
@@ -92,6 +95,20 @@ const createWindow = () => {
     splashWindow.setMenu(null);
   });
 };
+
+const client = new RPC.Client({ transport: 'ipc' });
+
+client.on('ready', async() => {
+  client.setActivity({
+    details: 'by Eiffelware Project',
+    state: 'Generating Passwords',
+    largeImageKey: 'gatekeeper',
+    largeImageText: 'GateKeeper v0.2.7',
+    startTimestamp: new Date()
+  });
+});
+
+client.login({ clientId: '799147256124801035' });
 
 app.on('ready', createWindow);
 

@@ -9,6 +9,7 @@
         </div>
         <p id="headerText">Loading App. . .</p>
         <a class="btn btn-danger disabled" href="#" style="margin-top: 5px; margin-bottom: 5px;" onclick="quitApp()" id="btnQuit">Quit</a>
+        <a class="btn btn-success disabled" href="#" style="margin-top: 5px; margin-bottom: 5px; display: none;" onclick="continueApp()" id="btnContinue">Skip Update</a>
         </div>
     </div>
   </body>
@@ -17,5 +18,10 @@
 <script defer>
   function quitApp() {
     window.close();
-  }
+  };
+
+  function continueApp() {
+    localStorage.setItem("skip_update", true);
+    quitApp();
+  };
 </script>
